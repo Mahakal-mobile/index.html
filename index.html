@@ -29,7 +29,7 @@
     #login-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: var(--bg); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
     .login-box { background: var(--surface); padding: 28px; border-radius: var(--radius); border: 1px solid var(--border); width: 100%; max-width: 360px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
     .login-box h2 { margin-bottom: 20px; text-align: center; color: var(--primary); font-size: 1.5rem; }
-    .login-box input { width: 100%; padding: 14px; margin-bottom: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); outline: none; font-size: 1rem; }
+    .login-box input { width: 100%; padding: 14px; margin-bottom: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); outline: none; font-size: 1rem; text-align: center; }
     .login-box button { width: 100%; padding: 14px; background: var(--primary); border: none; border-radius: 10px; font-weight: bold; color: #070a13; cursor: pointer; font-size: 1rem; }
     
     /* App Interface */
@@ -78,13 +78,13 @@
   <div id="login-overlay">
     <div class="login-box">
       <h2>Guru AI – Secure Access</h2>
-      <input type="text" id="username" placeholder="यूज़रनेम (User name)" autocomplete="off" />
-      <input type="password" id="password" placeholder="पासवर्ड (Password)" />
+      <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">निकेश पांडे जी, अपना सीक्रेट पिन डालें</p>
+      <input type="password" id="secure-pin" placeholder="यहाँ 4 अंकों का पिन डालें" maxlength="4" inputmode="numeric" pattern="[0-9]*" autocomplete="off" />
       <button onclick="verifySystemAccess()">लॉगिन प्रमाणीकरण</button>
     </div>
   </div>
 
-  <!-- 📱 फुल कंट्रोल AI इंटरफ़ेस -->
+  <!-- 📱 फुल नियंत्रण AI इंटरफ़ेस -->
   <div id="app-content">
     <header>
       <div class="logo">Guru AI <span>✦</span></div>
@@ -131,26 +131,25 @@
   </div>
 
   <script>
-    // फिक्स क्रेडेंशियल्स (सख्त सुरक्षा के साथ आसान मैचिंग)
-    const ACCOUNT_USER = "nikesh pandey";
-    const ACCOUNT_PASS = "nikesh@12345";
+    // निकेश पांडे जी के लिए नया सुपर इज़ी सीक्रेट पिन कोड
+    const SECRET_PIN = "1234";
 
     let currentDraftMode = null;
     let pendingData = "";
 
     function verifySystemAccess() {
-      // .toLowerCase() जोड़ने से अब छोटे-बड़े अक्षर की कोई पाबंदी नहीं रहेगी
-      const uInput = document.getElementById("username").value.trim().toLowerCase();
-      const pInput = document.getElementById("password").value.toLowerCase();
+      const pinInput = document.getElementById("secure-pin").value.trim();
 
-      if (uInput === ACCOUNT_USER && pInput === ACCOUNT_PASS) {
+      // अब यूज़रनेम लिखने का झंझट ही खत्म, सीधे पिन मैच होगा
+      if (pinInput === SECRET_PIN) {
         document.getElementById("login-overlay").style.display = "none";
         document.getElementById("app-content").style.display = "flex";
         retrieveSavedKey();
         writeLog("सिस्टम का पूर्ण नियंत्रण निकेश पांडे को सौंप दिया गया है।", "ai");
         triggerVoiceResponse("स्वागत है निकेश पांडे जी, गुरु ए आई का पूर्ण नियंत्रण सक्रिय है। आदेश दें।");
       } else {
-        alert("अनाधिकृत प्रवेश निषेध! यूज़रनेम या पासवर्ड मैच नहीं हुआ।");
+        alert("अनाधिकृत प्रवेश निषेध! गलत पिन कोड।");
+        document.getElementById("secure-pin").value = "";
       }
     }
 
