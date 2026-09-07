@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0f19" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Guru AI – निकेश पांडे</title>
+  
+  <style>
+    :root {
+      --bg: #070a13;
+      --surface: #0f1524;
+      --surface2: #1e2942;
+      --text: #f1f5f9;
+      --text-muted: #64748b;
+      --primary: #38bdf8;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --border: #1e293b;
+      --radius: 16px;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+    
+    /* Login System */
+    #login-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: var(--bg); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+    .login-box { background: var(--surface); padding: 28px; border-radius: var(--radius); border: 1px solid var(--border); width: 100%; max-width: 360px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .login-box h2 { margin-bottom: 20px; text-align: center; color: var(--primary); font-size: 1.5rem; }
+    .login-box input { width: 100%; padding: 14px; margin-bottom: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); outline: none; font-size: 1rem; }
+    .login-box button { width: 100%; padding: 14px; background: var(--primary); border: none; border-radius: 10px; font-weight: bold; color: #070a13; cursor: pointer; font-size: 1rem; }
+    
+    /* App Interface */
+    #app-content { display: none; flex-direction: column; flex: 1; padding: 16px; height: 100vh; }
+    header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .logo { font-weight: 700; font-size: 1.2rem; color: var(--text); }
+    .logo span { color: var(--primary); }
+    .status-badge { background: var(--surface2); padding: 6px 14px; border-radius: 999px; font-size: 0.85rem; font-weight: 600; color: var(--primary); }
+    
+    /* Configuration Cards */
+    .panel-card { background: var(--surface); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); margin-top: 14px; }
+    .panel-card h3 { font-size: 0.95rem; margin-bottom: 8px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    .switch-box { display: flex; justify-content: space-between; align-items: center; }
+    .switch-label { font-weight: 600; font-size: 0.95rem; }
+    .switch-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+    
+    /* Action & Log Terminal */
+    #terminal-container { flex: 1; display: flex; flex-direction: column; min-height: 0; margin-top: 14px; }
+    #agent-log { flex: 1; background: #02040a; border-radius: var(--radius); padding: 14px; font-family: monospace; font-size: 0.9rem; overflow-y: auto; border: 1px solid var(--border); line-height: 1.4; }
+    .log-row { margin-bottom: 8px; word-wrap: break-word; }
+    .log-system { color: var(--text-muted); }
+    .log-user { color: var(--primary); font-weight: 600; }
+    .log-ai { color: var(--success); }
+    .log-alert { color: var(--danger); font-weight: bold; background: rgba(239, 68, 68, 0.1); padding: 6px; border-radius: 6px; border-left: 3px solid var(--danger); }
+    
+    /* Permission UI / Interactive Area */
+    #action-tray { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); margin-top: 12px; padding: 14px; display: none; transform: translateY(10px); transition: 0.3s ease; }
+    .tray-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; color: var(--primary); }
+    .tray-preview { background: var(--bg); padding: 10px; border-radius: 8px; font-size: 0.9rem; border: 1px solid var(--border); margin-bottom: 12px; white-space: pre-wrap; color: #e2e8f0; }
+    .tray-buttons { display: flex; gap: 10px; }
+    .action-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.9rem; }
+    .action-btn.send { background: var(--success); color: #070a13; }
+    .action-btn.edit { background: var(--surface2); color: var(--text); }
+    .action-btn.cancel { background: var(--danger); color: white; }
+    
+    /* Footer Layout & Control Bubble */
+    .controls-wrapper { display: flex; justify-content: center; align-items: center; padding: 16px 0; }
+    .mic-bubble { width: 68px; height: 68px; border-radius: 50%; background: var(--surface); border: 2px solid var(--border); color: var(--text); font-size: 1.6rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: 0.2s; }
+    .mic-bubble.listening { background: var(--danger); border-color: var(--danger); box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); transform: scale(1.05); }
+  </style>
+</head>
+<body>
+
+  <!-- 🔐 चरण 1: सुरक्षित लॉगिन लॉक स्क्रीन -->
+  <div id="login-overlay">
+    <div class="login-box">
+      <h2>Guru AI – Secure Access</h2>
+      <input type="text" id="username" placeholder="यूज़रनेम (User name)" autocomplete="off" />
+      <input type="password" id="password" placeholder="पासवर्ड (Password)" />
+      <button onclick="verifySystemAccess()">लॉगिन प्रमाणीकरण</button>
+    </div>
+  </div>
+
+  <!-- 📱 चरण 2: फुल कंट्रोल AI इंटरफ़ेस (लॉगिन के बाद सक्रिय) -->
+  <div id="app-content">
+    <header>
+      <div class="logo">Guru AI <span>✦</span></div>
+      निकेश पांडे</div>
+    </header>
+
+    <!-- 🔑 आंतरिक सीक्रेट एपीआई बॉक्स (बाहर से अदृश्य) -->
+    <div class="panel-card">
+      <h3>🔐 Internal Vault (API Key सुरक्षित बॉक्स)</h3>
+      <input type="password" id="secure-key-vault" placeholder="यहाँ अपनी AI API कुंजी दर्ज करें..." style="width:100%; padding:12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:white; font-size:0.9rem;" onchange="storeEncryptedKey()" />
+    </div>
+
+    <!-- 🎛️ मास्टर स्विच: ऑटो एसएमएस और बैकग्राउंड ट्रैकिंग नियंत्रण -->
+    <div class="panel-card switch-box">
+      <div>
+        <div class="switch-label">ऑटो एसएमएस एवं सिस्टम ऑपरेट</div>
+        <div class="switch-sub">बैकग्राउंड वॉयस और फ्रॉड डिटेक्शन मोड</div>
+      </div>
+      <input type="checkbox" id="master-agent-toggle" style="width:26px; height:26px; accent-color:var(--primary);" onchange="handleAgentStateChange()" checked />
+    </div>
+
+    <!-- 🖥️ लाइव ऑपरेशन टर्मिनल (लाइव डेटा और गतिविधियों के लॉग) -->
+    <div id="terminal-container">
+      <div id="agent-log">
+        <div class="log-row log-system">[सिस्टम]: सुरक्षा घेरा मजबूत है। लॉगिन प्रमाणित। आदेश की प्रतीक्षा में...</div>
+      </div>
+    </div>
+
+    <!-- 🤝 ह्यूमन-इन-द-लूप: परमिशन और एडिटिंग ट्रे (यूजर अप्रूवल विंडो) -->
+    <div id="action-tray">
+      <div class="tray-title" id="tray-action-type">AI द्वारा तैयार किया गया कार्य:</div>
+      <div class="tray-preview" id="tray-text-preview" contenteditable="true">मैसेज का ड्राफ्ट यहाँ दिखेगा...</div>
+      <div class="tray-buttons">
+        <button class="action-btn edit" onclick="enableManualEdit()">📝 सुधारें</button>
+        <button class="action-btn cancel" onclick="denyOperation()">✕ निरस्त</button>
+        <button class="action-btn send" onclick="approveOperation()">➤ अनुमति दें (Send)</button>
+      </div>
+    </div>
+
+    <!-- 🎙️ मुख्य कंट्रोल हब (वॉयस कमांड एक्टिवेटर) -->
+    <div class="controls-wrapper">
+      <button class="mic-bubble" id="agent-voice-bubble" onclick="toggleVoiceAgent()">🎤</button>
+    </div>
+  </div>
+
+  <script>
+    // निकेश पांडे जी के दिए गए फिक्स क्रेडेंशियल्स
+    const ACCOUNT_USER = "Nikesh pandey";
+    const ACCOUNT_PASS = "Nikesh@12345";
+
+    let currentDraftMode = null;
+    let pendingData = "";
+
+    function verifySystemAccess() {
+      const uInput = document.getElementById("username").value.trim();
+      const pInput = document.getElementById("password").value;
+
+      if (uInput === ACCOUNT_USER && pInput === ACCOUNT_PASS) {
+        document.getElementById("login-overlay").style.display = "none";
+        document.getElementById("app-content").style.display = "flex";
+        retrieveSavedKey();
+        writeLog("सिस्टम का पूर्ण नियंत्रण निकेश पांडे को सौंप दिया गया है।", "ai");
+        triggerVoiceResponse("स्वागत है निकेश पांडे जी, गुरु ए आई का पूर्ण नियंत्रण सक्रिय है। आदेश दें।");
+      } else {
+        alert("अनाधिकृत प्रवेश निषेध! यूज़रनेम या पासवर्ड त्रुटिपूर्ण है।");
+      }
+    }
+
+    function storeEncryptedKey() {
+      const keyVal = document.getElementById("secure-key-vault").value;
+      localStorage.setItem("guru_vault_key", btoa(keyVal)); 
+      writeLog("API Key को इंटरनल वॉल्ट में सुरक्षित रूप से लॉक कर दिया गया है।", "system");
+    }
+
+    function retrieveSavedKey() {
+      const stored = localStorage.getItem("guru_vault_key");
+      if (stored) {
+        document.getElementById("secure-key-vault").value = atob(stored);
+      }
+    }
+
+    function writeLog(message, origin = "system") {
+      const logBox = document.getElementById("agent-log");
+      const row = document.createElement("div");
+      row.className = "log-row log-" + origin;
+      
+      if(origin === "system") row.textContent = `[सिस्टम]: ${message}`;
+      else if(origin === "user") row.textContent = `[निकेश]: ${message}`;
+      else if(origin === "ai") row.textContent = `[Guru AI]: ${message}`;
+      else if(origin === "alert") row.textContent = `[🚨 फ्रॉड अलर्ट]: ${message}`;
+      
