@@ -74,7 +74,7 @@
 </head>
 <body>
 
-  <!-- 🔐 चरण 1: सुरक्षित लॉगिन लॉक स्क्रीन -->
+  <!-- 🔐 सुरक्षित लॉगिन लॉक स्क्रीन -->
   <div id="login-overlay">
     <div class="login-box">
       <h2>Guru AI – Secure Access</h2>
@@ -84,20 +84,20 @@
     </div>
   </div>
 
-  <!-- 📱 चरण 2: फुल कंट्रोल AI इंटरफ़ेस (लॉगिन के बाद सक्रिय) -->
+  <!-- 📱 फुल कंट्रोल AI इंटरफ़ेस -->
   <div id="app-content">
     <header>
       <div class="logo">Guru AI <span>✦</span></div>
       निकेश पांडे</div>
     </header>
 
-    <!-- 🔑 आंतरिक सीक्रेट एपीआई बॉक्स (बाहर से अदृश्य) -->
+    <!-- 🔑 आंतरिक सीक्रेट एपीआई बॉक्स -->
     <div class="panel-card">
       <h3>🔐 Internal Vault (API Key सुरक्षित बॉक्स)</h3>
       <input type="password" id="secure-key-vault" placeholder="यहाँ अपनी AI API कुंजी दर्ज करें..." style="width:100%; padding:12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:white; font-size:0.9rem;" onchange="storeEncryptedKey()" />
     </div>
 
-    <!-- 🎛️ मास्टर स्विच: ऑटो एसएमएस और बैकग्राउंड ट्रैकिंग नियंत्रण -->
+    <!-- 🎛️ मास्टर स्विच -->
     <div class="panel-card switch-box">
       <div>
         <div class="switch-label">ऑटो एसएमएस एवं सिस्टम ऑपरेट</div>
@@ -106,14 +106,14 @@
       <input type="checkbox" id="master-agent-toggle" style="width:26px; height:26px; accent-color:var(--primary);" onchange="handleAgentStateChange()" checked />
     </div>
 
-    <!-- 🖥️ लाइव ऑपरेशन टर्मिनल (लाइव डेटा और गतिविधियों के लॉग) -->
+    <!-- 🖥️ लाइव ऑपरेशन टर्मिनल -->
     <div id="terminal-container">
       <div id="agent-log">
         <div class="log-row log-system">[सिस्टम]: सुरक्षा घेरा मजबूत है। लॉगिन प्रमाणित। आदेश की प्रतीक्षा में...</div>
       </div>
     </div>
 
-    <!-- 🤝 ह्यूमन-इन-द-लूप: परमिशन और एडिटिंग ट्रे (यूजर अप्रूवल विंडो) -->
+    <!-- 🤝 ह्यूमन-इन-द-लूप परमिशन यूआई -->
     <div id="action-tray">
       <div class="tray-title" id="tray-action-type">AI द्वारा तैयार किया गया कार्य:</div>
       <div class="tray-preview" id="tray-text-preview" contenteditable="true">मैसेज का ड्राफ्ट यहाँ दिखेगा...</div>
@@ -124,23 +124,24 @@
       </div>
     </div>
 
-    <!-- 🎙️ मुख्य कंट्रोल हब (वॉयस कमांड एक्टिवेटर) -->
+    <!-- 🎙️ मुख्य कंट्रोल हब -->
     <div class="controls-wrapper">
       <button class="mic-bubble" id="agent-voice-bubble" onclick="toggleVoiceAgent()">🎤</button>
     </div>
   </div>
 
   <script>
-    // निकेश पांडे जी के दिए गए फिक्स क्रेडेंशियल्स
-    const ACCOUNT_USER = "Nikesh pandey";
-    const ACCOUNT_PASS = "Nikesh@12345";
+    // फिक्स क्रेडेंशियल्स (सख्त सुरक्षा के साथ आसान मैचिंग)
+    const ACCOUNT_USER = "nikesh pandey";
+    const ACCOUNT_PASS = "nikesh@12345";
 
     let currentDraftMode = null;
     let pendingData = "";
 
     function verifySystemAccess() {
-      const uInput = document.getElementById("username").value.trim();
-      const pInput = document.getElementById("password").value;
+      // .toLowerCase() जोड़ने से अब छोटे-बड़े अक्षर की कोई पाबंदी नहीं रहेगी
+      const uInput = document.getElementById("username").value.trim().toLowerCase();
+      const pInput = document.getElementById("password").value.toLowerCase();
 
       if (uInput === ACCOUNT_USER && pInput === ACCOUNT_PASS) {
         document.getElementById("login-overlay").style.display = "none";
@@ -149,7 +150,7 @@
         writeLog("सिस्टम का पूर्ण नियंत्रण निकेश पांडे को सौंप दिया गया है।", "ai");
         triggerVoiceResponse("स्वागत है निकेश पांडे जी, गुरु ए आई का पूर्ण नियंत्रण सक्रिय है। आदेश दें।");
       } else {
-        alert("अनाधिकृत प्रवेश निषेध! यूज़रनेम या पासवर्ड त्रुटिपूर्ण है।");
+        alert("अनाधिकृत प्रवेश निषेध! यूज़रनेम या पासवर्ड मैच नहीं हुआ।");
       }
     }
 
@@ -176,3 +177,8 @@
       else if(origin === "ai") row.textContent = `[Guru AI]: ${message}`;
       else if(origin === "alert") row.textContent = `[🚨 फ्रॉड अलर्ट]: ${message}`;
       
+      logBox.appendChild(row);
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function triggerVoiceResponse(speechText) {
