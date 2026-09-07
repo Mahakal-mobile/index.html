@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="hi" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guru AI - Advanced Multimodal Terminal</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #3b82f6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger: #ef4444;
+            --success: #22c55e;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        /* Top Clean Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            margin-bottom: 15px;
+        }
+        h1 { margin: 0; font-size: 20px; color: var(--accent); }
+        .top-controls { display: flex; gap: 10px; align-items: center; }
+        
+        .btn-toggle {
+            background: #334155;
+            color: white;
+            border: 1px solid #475569;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .btn-toggle:hover { background: var(--accent); }
+
+        /* Feature List Dropdown / Modal */
+        .feature-modal {
+            display: none;
+            background: var(--card-bg);
+            border: 1px solid var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+        .feature-modal ul { padding-left: 20px; margin: 5px 0; color: var(--text-muted); }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+        .card h3 { margin-top: 0; color: #60a5fa; font-size: 15px; border-bottom: 1px solid #334155; padding-bottom: 6px; }
+
+        #chat-box {
+            height: 240px;
+            overflow-y: auto;
+            border: 1px solid #334155;
+            background: #0f172a;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .msg { padding: 8px 12px; border-radius: 6px; max-width: 85%; font-size: 13px; line-height: 1.4; }
+        .user-msg { background: #2563eb; align-self: flex-end; }
+        .ai-msg { background: #334155; align-self: flex-start; }
+
+        /* Input & Upload Toolbar */
+        .input-toolbar {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .file-preview {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            font-size: 12px;
+            color: var(--success);
+            display: none;
+        }
+        .chat-input-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            outline: none;
+            font-size: 13px;
+        }
+        .icon-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .icon-btn:hover { background: var(--accent); }
+        
+        /* Live Camera Box */
+        #cameraContainer {
+            display: none;
+            position: relative;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        video { width: 100%; max-height: 200px; border-radius: 8px; background: black; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Clean Header with Language & Features Button -->
+        <header>
+            <h1>Guru AI Terminal</h1>
+            <div class="top-controls">
+                <button class="btn-toggle" onclick="toggleLanguage()" id="langBtn">English / हिंदी</button>
+                <button class="btn-toggle" onclick="toggleFeatures()">⚙️ Features List</button>
+            </div>
+        </header>
+
+        <!-- Feature List Hidden Box -->
+        <div id="featureModal" class="feature-modal">
+            <b>✨ Guru AI Active Capabilities:</b>
+            <ul>
+                <li><b>Live Camera & Real-time Vision:</b> लाइव कैमरा खोलकर किसी भी वस्तु, सवाल या वीडियो को स्कैन कर सटीक उत्तर पाना।</li>
+                <li><b>Gallery / File / PDF Upload:</b> फोटो, वीडियो, या PDF अपलोड करके उसका एनालिसिस और सही उत्तर प्राप्त करना।</li>
+                <li><b>Real Web Search Integration:</b> इंटरनेट से लाइव डेटा सर्च करके सटीक और असली जानकारी देना (Fake नहीं)।</li>
+                <li><b>Bilingual Support:</b> एक क्लिक में हिंदी और अंग्रेजी भाषा बदलना।</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3 id="terminalTitle">AI Smart Vision & Chat Terminal</h3>
+            
+            <!-- Live Camera Preview -->
+            <div id="cameraContainer">
+                <video id="cameraStream" autoplay playsinline></video>
+                <button class="btn-toggle" style="margin-top:5px; background:var(--danger);" onclick="captureAndAnalyze()">📸 Capture & Analyze</button>
+            </div>
+
+            <div id="chat-box">
+                <div class="msg ai-msg" id="welcomeMsg">नमस्ते! मैं Guru AI हूँ। आप फोटो, पीडीएफ, लाइव कैमरा या टेक्स्ट के जरिए कोई भी सवाल पूछ सकते हैं। मैं लाइव सर्च करके सही जवाब दूँगा।</div>
+            </div>
+
+            <!-- File Preview Indicator -->
+            <div id="filePreview" class="file-preview">
+                📁 <span id="fileName">फाइल चुनी गई</span>
+                <button style="background:none; border:none; color:var(--danger); cursor:pointer;" onclick="clearFile()">❌</button>
+            </div>
+
+            <div class="input-toolbar">
+                <div class="chat-input-row">
+                    <!-- Hidden File Inputs -->
+                    <input type="file" id="imageInput" accept="image/*,video/*" style="display:none" onchange="handleFileSelect(event)">
+                    <input type="file" id="pdfInput" accept=".pdf,.txt,.doc" style="display:none" onchange="handleFileSelect(event)">
+
+                    <button class="icon-btn" title="Live Camera" onclick="toggleCamera()">📷</button>
+                    <button class="icon-btn" title="Upload Photo/Video" onclick="document.getElementById('imageInput').click()">🖼️</button>
+                    <button class="icon-btn" title="Upload PDF/Files" onclick="document.getElementById('pdfInput').click()">📄</button>
+                    
+                    <input type="text" id="userInput" placeholder="अपना सवाल यहाँ पूछें या कमांड दें..." onkeypress="checkEnter(event)">
+                    <button class="icon-btn" style="background:var(--accent);" onclick="sendMessage()">⬆️</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Canvas for Camera Capture -->
+    <canvas id="snapshotCanvas" style="display:none;"></canvas>
+
+    <script>
+        let currentLang = 'hi';
+        let cameraStreamObj = null;
+        let selectedFileBase64 = null;
+        let selectedFileMime = null;
+
+        function toggleFeatures() {
+            const modal = document.getElementById('featureModal');
+            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'hi' ? 'en' : 'hi';
+            const langBtn = document.getElementById('langBtn');
+            const inputField = document.getElementById('userInput');
+            const welcomeMsg = document.getElementById('welcomeMsg');
+
+            if (currentLang === 'en') {
+                langBtn.innerText = 'हिंदी / English';
+                inputField.placeholder = 'Type your question or command here...';
+                welcomeMsg.innerHTML = 'Hello! I am Guru AI. Ask any question via photo, PDF, live camera or text. I will fetch real web data for accurate answers.';
+            } else {
+                langBtn.innerText = 'English / हिंदी';
+                inputField.placeholder = 'अपना सवाल यहाँ पूछें या कमांड दें...';
+                welcomeMsg.innerHTML = 'नमस्ते! मैं Guru AI हूँ। आप फोटो, पीडीएफ, लाइव कैमरा या टेक्स्ट के जरिए कोई भी सवाल पूछ सकते हैं। मैं लाइव सर्च करके सही जवाब दूँगा।';
+            }
+        }
+
+        async function toggleCamera() {
+            const camContainer = document.getElementById('cameraContainer');
+            const videoElem = document.getElementById('cameraStream');
+
+            if (cameraStreamObj) {
+                cameraStreamObj.getTracks().forEach(track => track.stop());
+                cameraStreamObj = null;
+                camContainer.style.display = 'none';
+            } else {
+                try {
+                    cameraStreamObj = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                    videoElem.srcObject = cameraStreamObj;
+                    camContainer.style.display = 'block';
+                } catch (err) {
+                    alert('कैमरा शुरू करने में असमर्थ: परमिशन चेक करें।');
+                }
+            }
+        }
+
+        function captureAndAnalyze() {
+            const videoElem = document.getElementById('cameraStream');
+            const canvas = document.getElementById('snapshotCanvas');
+            canvas.width = videoElem.videoWidth || 640;
+            canvas.height = videoElem.videoHeight || 480;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(videoElem, 0, 0, canvas.width, canvas.height);
+            
+            selectedFileBase64 = canvas.toDataURL('image/jpeg').split(',')[1];
+            selectedFileMime = 'image/jpeg';
+
+            document.getElementById('filePreview').style.display = 'flex';
+            document.getElementById('fileName').innerText = 'Live Camera Snapshot Captured';
+            toggleCamera(); // Close camera after capture
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64String = e.target.result.split(',')[1];
+                selectedFileBase64 = base64String;
+                selectedFileMime = file.type;
+
+                document.getElementById('filePreview').style.display = 'flex';
+                document.getElementById('fileName').innerText = file.name;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearFile() {
+            selectedFileBase64 = null;
+            selectedFileMime = null;
+            document.getElementById('filePreview').style.display = 'none';
+        }
+
+        function checkEnter(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        async function sendMessage() {
+            const inputField = document.getElementById('userInput');
+            const message = inputField.value.trim();
+            if (!message && !selectedFileBase64) return;
+
+            appendMsg('आप', message || '[Attached File/Image]', 'user-msg');
+            inputField.value = '';
+
+            const payloadData = {
+                message: message || "Analyze this file/image and provide correct information using real web data.",
+                fileData: selectedFileBase64,
+                mimeType: selectedFileMime,
+                language: currentLang
+            };
+
+            clearFile();
+            appendMsg('Guru AI', currentLang === 'hi' ? 'सर्च और एनालिसिस किया जा रहा है...' : 'Searching and analyzing...', 'ai-msg');
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payloadData)
+                });
+
+                const data = await response.json();
+                
+                // Remove the loading message and add actual reply
+                const chatBox = document.getElementById('chat-box');
+                chatBox.removeChild(chatBox.lastChild);
+
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    appendMsg('Guru AI', data.candidates[0].content.parts[0].text, 'ai-msg');
+                } else {
+                    appendMsg('Guru AI', 'सर्वर से सही उत्तर नहीं मिला।', 'ai-msg');
+                }
+            } catch (error) {
+                const chatBox = document.getElementById('chat-box');
+                chatBox.removeChild(chatBox.lastChild);
+                appendMsg('Guru AI', 'कनेक्शन एरर: बैकएंड से संपर्क नहीं हुआ।', 'ai-msg');
+            }
+        }
+
+        function appendMsg(sender, text, className) {
+            const chatBox = document.getElementById('chat-box');
+            const div = document.createElement('div');
+            div.className = `msg ${className}`;
+            div.innerHTML = `<b>${sender}:</b> ${text.replace(/\n/g, '<br>')}`;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
