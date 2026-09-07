@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#0b0f19" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Guru AI – निकेश पांडे</title>
+  <title>Guru AI – Nikesh Pandey (Direct Mode)</title>
   
   <style>
     :root {
@@ -25,15 +25,8 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
     
-    /* Login System */
-    #login-overlay { position: fixed; top:0; left:0; right:0; bottom:0; background: var(--bg); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-    .login-box { background: var(--surface); padding: 28px; border-radius: var(--radius); border: 1px solid var(--border); width: 100%; max-width: 360px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    .login-box h2 { margin-bottom: 20px; text-align: center; color: var(--primary); font-size: 1.5rem; }
-    .login-box input { width: 100%; padding: 14px; margin-bottom: 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); outline: none; font-size: 1rem; text-align: center; }
-    .login-box button { width: 100%; padding: 14px; background: var(--primary); border: none; border-radius: 10px; font-weight: bold; color: #070a13; cursor: pointer; font-size: 1rem; }
-    
     /* App Interface */
-    #app-content { display: none; flex-direction: column; flex: 1; padding: 16px; height: 100vh; }
+    #app-content { display: flex; flex-direction: column; flex: 1; padding: 16px; height: 100vh; }
     header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
     .logo { font-weight: 700; font-size: 1.2rem; color: var(--text); }
     .logo span { color: var(--primary); }
@@ -53,7 +46,7 @@
     .log-row { margin-bottom: 8px; word-wrap: break-word; }
     .log-system { color: var(--text-muted); }
     .log-user { color: var(--primary); font-weight: 600; }
-    .log-ai { color: var(--success); }
+    .log-agent { color: var(--success); }
     .log-alert { color: var(--danger); font-weight: bold; background: rgba(239, 68, 68, 0.1); padding: 6px; border-radius: 6px; border-left: 3px solid var(--danger); }
     
     /* Permission UI / Interactive Area */
@@ -74,89 +67,67 @@
 </head>
 <body>
 
-  <!-- 🔐 सुरक्षित लॉगिन लॉक स्क्रीन -->
-  <div id="login-overlay">
-    <div class="login-box">
-      <h2>Guru AI – Secure Access</h2>
-      <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">निकेश पांडे जी, अपना सीक्रेट पिन डालें</p>
-      <input type="password" id="secure-pin" placeholder="यहाँ 4 अंकों का पिन डालें" maxlength="4" inputmode="numeric" pattern="[0-9]*" autocomplete="off" />
-      <button onclick="verifySystemAccess()">लॉगिन प्रमाणीकरण</button>
-    </div>
-  </div>
-
-  <!-- 📱 फुल नियंत्रण AI इंटरफ़ेस -->
+  <!-- 📱 Main AI Agent Dashboard (No Lock Screen) -->
   <div id="app-content">
     <header>
       <div class="logo">Guru AI <span>✦</span></div>
-      निकेश पांडे</div>
+      Nikesh Pandey</div>
     </header>
 
-    <!-- 🔑 आंतरिक सीक्रेट एपीआई बॉक्स -->
+    <!-- 🔑 Internal Secret API Vault Card -->
     <div class="panel-card">
-      <h3>🔐 Internal Vault (API Key सुरक्षित बॉक्स)</h3>
-      <input type="password" id="secure-key-vault" placeholder="यहाँ अपनी AI API कुंजी दर्ज करें..." style="width:100%; padding:12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:white; font-size:0.9rem;" onchange="storeEncryptedKey()" />
+      <h3>🔐 Internal Vault (Secure API Key Box)</h3>
+      <input type="password" id="secure-key-vault" placeholder="Enter your AI API Key here..." style="width:100%; padding:12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:white; font-size:0.9rem;" onchange="storeEncryptedKey()" />
     </div>
 
-    <!-- 🎛️ मास्टर स्विच -->
+    <!-- 🎛️ Master On/Off Switch -->
     <div class="panel-card switch-box">
       <div>
-        <div class="switch-label">ऑटो एसएमएस एवं सिस्टम ऑपरेट</div>
-        <div class="switch-sub">बैकग्राउंड वॉयस और फ्रॉड डिटेक्शन मोड</div>
+        <div class="switch-label">Auto SMS & System Operate</div>
+        <div class="switch-sub">Background voice and fraud monitoring mode</div>
       </div>
       <input type="checkbox" id="master-agent-toggle" style="width:26px; height:26px; accent-color:var(--primary);" onchange="handleAgentStateChange()" checked />
     </div>
 
-    <!-- 🖥️ लाइव ऑपरेशन टर्मिनल -->
+    <!-- 🖥️ Live Terminal Log Dashboard -->
     <div id="terminal-container">
       <div id="agent-log">
-        <div class="log-row log-system">[सिस्टम]: सुरक्षा घेरा मजबूत है। लॉगिन प्रमाणित। आदेश की प्रतीक्षा में...</div>
+        <div class="log-row log-system">[SYSTEM]: Security shields active. Guru AI initialized. Awaiting orders...</div>
       </div>
     </div>
 
-    <!-- 🤝 ह्यूमन-इन-द-लूप परमिशन यूआई -->
+    <!-- 🤝 Human-In-The-Loop User Permission Window (Send / Edit) -->
     <div id="action-tray">
-      <div class="tray-title" id="tray-action-type">AI द्वारा तैयार किया गया कार्य:</div>
-      <div class="tray-preview" id="tray-text-preview" contenteditable="true">मैसेज का ड्राफ्ट यहाँ दिखेगा...</div>
+      <div class="tray-title" id="tray-action-type">AI Generated Task Blueprint:</div>
+      <div class="tray-preview" id="tray-text-preview" contenteditable="true">Message draft payload will load here...</div>
       <div class="tray-buttons">
-        <button class="action-btn edit" onclick="enableManualEdit()">📝 सुधारें</button>
-        <button class="action-btn cancel" onclick="denyOperation()">✕ निरस्त</button>
-        <button class="action-btn send" onclick="approveOperation()">➤ अनुमति दें (Send)</button>
+        <button class="action-btn edit" onclick="enableManualEdit()">📝 Modify</button>
+        <button class="action-btn cancel" onclick="denyOperation()">✕ Discard</button>
+        <button class="action-btn send" onclick="approveOperation()">➤ Approve (Send)</button>
       </div>
     </div>
 
-    <!-- 🎙️ मुख्य कंट्रोल हब -->
+    <!-- 🎙️ Voice Agent Capture Hub -->
     <div class="controls-wrapper">
       <button class="mic-bubble" id="agent-voice-bubble" onclick="toggleVoiceAgent()">🎤</button>
     </div>
   </div>
 
   <script>
-    // निकेश पांडे जी के लिए नया सुपर इज़ी सीक्रेट पिन कोड
-    const SECRET_PIN = "1234";
-
     let currentDraftMode = null;
     let pendingData = "";
 
-    function verifySystemAccess() {
-      const pinInput = document.getElementById("secure-pin").value.trim();
-
-      // अब यूज़रनेम लिखने का झंझट ही खत्म, सीधे पिन मैच होगा
-      if (pinInput === SECRET_PIN) {
-        document.getElementById("login-overlay").style.display = "none";
-        document.getElementById("app-content").style.display = "flex";
-        retrieveSavedKey();
-        writeLog("सिस्टम का पूर्ण नियंत्रण निकेश पांडे को सौंप दिया गया है।", "ai");
-        triggerVoiceResponse("स्वागत है निकेश पांडे जी, गुरु ए आई का पूर्ण नियंत्रण सक्रिय है। आदेश दें।");
-      } else {
-        alert("अनाधिकृत प्रवेश निषेध! गलत पिन कोड।");
-        document.getElementById("secure-pin").value = "";
-      }
-    }
+    // Welcome Trigger on Application Boot
+    window.addEventListener('load', () => {
+      retrieveSavedKey();
+      writeLog("Full smartphone control framework assigned to Nikesh Pandey.", "agent");
+      triggerVoiceResponse("Welcome Nikesh Pandey ji. Guru A I full system control is active. Please give your command.");
+    });
 
     function storeEncryptedKey() {
       const keyVal = document.getElementById("secure-key-vault").value;
       localStorage.setItem("guru_vault_key", btoa(keyVal)); 
-      writeLog("API Key को इंटरनल वॉल्ट में सुरक्षित रूप से लॉक कर दिया गया है।", "system");
+      writeLog("API Key successfully encrypted and locked into Internal Vault.", "system");
     }
 
     function retrieveSavedKey() {
@@ -171,13 +142,59 @@
       const row = document.createElement("div");
       row.className = "log-row log-" + origin;
       
-      if(origin === "system") row.textContent = `[सिस्टम]: ${message}`;
-      else if(origin === "user") row.textContent = `[निकेश]: ${message}`;
-      else if(origin === "ai") row.textContent = `[Guru AI]: ${message}`;
-      else if(origin === "alert") row.textContent = `[🚨 फ्रॉड अलर्ट]: ${message}`;
+      if(origin === "system") row.textContent = `[SYSTEM]: ${message}`;
+      else if(origin === "user") row.textContent = `[NIKESH]: ${message}`;
+      else if(origin === "agent") row.textContent = `[GURU AI]: ${message}`;
+      else if(origin === "alert") row.textContent = `[🚨 FRAUD ALERT]: ${message}`;
       
       logBox.appendChild(row);
       logBox.scrollTop = logBox.scrollHeight;
     }
 
     function triggerVoiceResponse(speechText) {
+      if (!window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(speechText);
+      utterance.lang = "hi-IN"; // Speaks in clear Hindi accent for you
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // ================= Native Web Speech Recognition Pipeline =================
+    const VoiceRecognitionEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let voiceSession = null;
+    let isSpeechActive = false;
+
+    if (VoiceRecognitionEngine) {
+      voiceSession = new VoiceRecognitionEngine();
+      voiceSession.continuous = true;
+      voiceSession.interimResults = false;
+      voiceSession.lang = "hi-IN"; // Recognizes Hindi/Hinglish speech input perfectly
+
+      voiceSession.onresult = (event) => {
+        const lastResultIndex = event.results.length - 1;
+        if (event.results[lastResultIndex].isFinal) {
+          const rawCommand = event.results[lastResultIndex].transcript.trim();
+          writeLog(rawCommand, "user");
+          evaluateAgentIntelligence(rawCommand);
+        }
+      };
+
+      voiceSession.onend = () => {
+        if (isSpeechActive && document.getElementById("master-agent-toggle").checked) {
+          try { voiceSession.start(); } catch(e) {}
+        }
+      };
+    }
+
+    function toggleVoiceAgent() {
+      if (!voiceSession) return alert("Voice speech engine is unsupported on this mobile browser architecture.");
+      
+      const btn = document.getElementById("agent-voice-bubble");
+      if (isSpeechActive) {
+        isSpeechActive = false;
+        voiceSession.stop();
+        btn.classList.remove("listening");
+        writeLog("Voice transmission stream deactivated.", "system");
+      } else {
+        isSpeechActive = true;
+        voiceSession.start();
